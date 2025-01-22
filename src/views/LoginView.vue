@@ -33,7 +33,7 @@ const authStore = useAuthStore()
 async function handleLogin() {
   try {
     // Beispiel-Endpoint: http://localhost:3000/api/auth/login
-    const response = await axios.post('http://localhost:3000/api/auth/login', {
+    const response = await axios.post('http://localhost:5000/api/auth/login', {
       email: email.value,
       password: password.value,
     })

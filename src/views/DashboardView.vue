@@ -25,7 +25,7 @@ const dashboardData = ref<DashboardData | null>(null)
 onMounted(async () => {
   const authStore = useAuthStore()
   try {
-    const response = await axios.get('http://localhost:3000/api/dashboard', {
+    const response = await axios.get('http://localhost:5000/api/dashboard', {
       headers: { Authorization: `Bearer ${authStore.token}` },
     })
     dashboardData.value = response.data

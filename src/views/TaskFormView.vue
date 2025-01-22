@@ -86,7 +86,7 @@ onMounted(async () => {
 
 async function loadTask() {
   try {
-    const res = await axios.get(`http://localhost:3000/api/tasks/${route.params.id}`, {
+    const res = await axios.get(`http://localhost:5000/api/tasks/${route.params.id}`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     })
     const task = res.data
@@ -104,15 +104,17 @@ async function loadTask() {
 }
 
 async function onSubmit() {
+  console.log('Gesendetes Token:', authStore.token)
+
   try {
     if (isEditMode.value) {
       // Update
-      await axios.put(`http://localhost:3000/api/tasks/${route.params.id}`, form.value, {
+      await axios.put(`http://localhost:5000/api/tasks/${route.params.id}`, form.value, {
         headers: { Authorization: `Bearer ${authStore.token}` },
       })
     } else {
       // Create
-      await axios.post(`http://localhost:3000/api/tasks`, form.value, {
+      await axios.post(`http://localhost:5000/api/tasks`, form.value, {
         headers: { Authorization: `Bearer ${authStore.token}` },
       })
     }

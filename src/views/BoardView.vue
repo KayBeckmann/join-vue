@@ -53,7 +53,7 @@ const groupedTasks = computed(() => {
 onMounted(async () => {
   try {
     const authStore = useAuthStore()
-    const res = await axios.get('http://localhost:3000/api/tasks', {
+    const res = await axios.get('http://localhost:5000/api/tasks', {
       headers: { Authorization: `Bearer ${authStore.token}` },
     })
     tasks.value = res.data
