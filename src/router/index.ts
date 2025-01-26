@@ -1,9 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
-import DashboardView from '@/views/DashboardView.vue'
-import BoardView from '@/views/BoardView.vue'
-import TaskFormView from '@/views/TaskFormView.vue'
 import { useAuthStore } from '@/stores/index'
 
 const router = createRouter({
@@ -16,31 +11,35 @@ const router = createRouter({
     {
       path: '/login',
       name: 'Login',
-      component: LoginView,
+      component: () => import('@/views/LoginView.vue'), // Lazy Loading
     },
-    { path: '/register', name: 'Register', component: RegisterView },
+    {
+      path: '/register',
+      name: 'Register',
+      component: () => import('@/views/RegisterView.vue'), // Lazy Loading
+    },
     {
       path: '/dashboard',
       name: 'Dashboard',
-      component: DashboardView,
+      component: () => import('@/views/DashboardView.vue'), // Lazy Loading
       meta: { requiresAuth: true },
     },
     {
       path: '/board',
       name: 'Board',
-      component: BoardView,
+      component: () => import('@/views/BoardView.vue'), // Lazy Loading
       meta: { requiresAuth: true },
     },
     {
       path: '/task/new',
       name: 'TaskNew',
-      component: TaskFormView,
+      component: () => import('@/views/TaskFormView.vue'), // Lazy Loading
       meta: { requiresAuth: true },
     },
     {
       path: '/task/edit/:id',
       name: 'TaskEdit',
-      component: TaskFormView,
+      component: () => import('@/views/TaskFormView.vue'), // Lazy Loading
       meta: { requiresAuth: true },
     },
   ],
