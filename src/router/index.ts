@@ -1,55 +1,42 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/index'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    {
-      path: '/',
-      redirect: '/dashboard',
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: () => import('@/views/LoginView.vue'), // Lazy Loading
-    },
-    {
-      path: '/register',
-      name: 'Register',
-      component: () => import('@/views/RegisterView.vue'), // Lazy Loading
-    },
+    { path: '/', redirect: '/dashboard' },
+    { path: '/login', name: 'Login', component: () => import('@/views/LoginView.vue') },
+    { path: '/register', name: 'Register', component: () => import('@/views/RegisterView.vue') },
     {
       path: '/dashboard',
       name: 'Dashboard',
-      component: () => import('@/views/DashboardView.vue'), // Lazy Loading
+      component: () => import('@/views/DashboardView.vue'),
       meta: { requiresAuth: true },
     },
     {
       path: '/board',
       name: 'Board',
-      component: () => import('@/views/BoardView.vue'), // Lazy Loading
+      component: () => import('@/views/BoardView.vue'),
       meta: { requiresAuth: true },
     },
     {
       path: '/task/new',
       name: 'TaskNew',
-      component: () => import('@/views/TaskFormView.vue'), // Lazy Loading
+      component: () => import('@/views/TaskFormView.vue'),
       meta: { requiresAuth: true },
     },
     {
       path: '/task/edit/:id',
       name: 'TaskEdit',
-      component: () => import('@/views/TaskFormView.vue'), // Lazy Loading
+      component: () => import('@/views/TaskFormView.vue'),
       meta: { requiresAuth: true },
     },
   ],
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
-  const isLoggedIn = authStore.isLoggedIn
-
-  if (to.meta.requiresAuth && !isLoggedIn) {
+  if (to.meta.requiresAuth && !authStore.isLoggedIn) {
     next({ name: 'Login' })
   } else {
     next()

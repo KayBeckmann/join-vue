@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { useAuthStore } from '@/stores/index'
+import { useAuthStore } from '@/stores/auth'
 
 interface DashboardData {
   totalTasks: number

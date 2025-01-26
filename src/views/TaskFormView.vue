@@ -6,22 +6,18 @@
         <label>Titel</label>
         <input v-model="form.title" required />
       </div>
-
       <div>
         <label>Beschreibung</label>
         <textarea v-model="form.description"></textarea>
       </div>
-
       <div>
         <label>Fälligkeitsdatum</label>
         <input type="date" v-model="form.dueDate" />
       </div>
-
       <div>
         <label>Kategorie</label>
         <input v-model="form.category" />
       </div>
-
       <div>
         <label>Priorität</label>
         <select v-model="form.priority">
@@ -30,7 +26,6 @@
           <option value="niedrig">niedrig</option>
         </select>
       </div>
-
       <div>
         <label>Status</label>
         <select v-model="form.status">
@@ -40,9 +35,6 @@
           <option value="fertig">fertig</option>
         </select>
       </div>
-
-      <!-- Subtasks, Sachbearbeiter etc. bei Bedarf hier oder separat -->
-
       <button type="submit">Speichern</button>
     </form>
   </div>
@@ -51,23 +43,15 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
-import { useAuthStore } from '@/stores/index'
-
-interface TaskFormData {
-  title: string
-  description: string
-  dueDate: string | null
-  category: string
-  priority: string
-  status: string
-}
+import { useTaskStore } from '@/stores/tasks'
 
 const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
+const taskStore = useTaskStore()
 
-const form = ref<TaskFormData>({
+const isEditMode = computed(() => !!route.params.id)
+
+const form = ref({
   title: '',
   description: '',
   dueDate: null,
@@ -76,51 +60,24 @@ const form = ref<TaskFormData>({
   status: 'geplant',
 })
 
-const isEditMode = computed(() => !!route.params.id)
-
 onMounted(async () => {
   if (isEditMode.value) {
-    await loadTask()
+    const task = taskStore.getTaskById(Number(route.params.id))
+    if (task) {
+      form.value = { ...task }
+    } else {
+      await taskStore.fetchTask(Number(route.params.id))
+      form.value = { ...taskStore.getTaskById(Number(route.params.id)) }
+    }
   }
 })
 
-async function loadTask() {
-  try {
-    const res = await axios.get(`http://localhost:5000/api/tasks/${route.params.id}`, {
-      headers: { Authorization: `Bearer ${authStore.token}` },
-    })
-    const task = res.data
-    form.value = {
-      title: task.title,
-      description: task.description,
-      dueDate: task.dueDate ? task.dueDate.substring(0, 10) : null, // YYYY-MM-DD
-      category: task.category,
-      priority: task.priority,
-      status: task.status,
-    }
-  } catch (error) {
-    console.error('Fehler beim Laden des Tasks:', error)
-  }
-}
-
 async function onSubmit() {
-  console.log('Gesendetes Token:', authStore.token)
-
-  try {
-    if (isEditMode.value) {
-      // Update
-      await axios.put(`http://localhost:5000/api/tasks/${route.params.id}`, form.value, {
-        headers: { Authorization: `Bearer ${authStore.token}` },
-      })
-    } else {
-      // Create
-      await axios.post(`http://localhost:5000/api/tasks`, form.value, {
-        headers: { Authorization: `Bearer ${authStore.token}` },
-      })
-    }
-    router.push({ name: 'Board' })
-  } catch (error) {
-    console.error('Fehler beim Speichern des Tasks:', error)
+  if (isEditMode.value) {
+    await taskStore.updateTask(Number(route.params.id), form.value)
+  } else {
+    await taskStore.createTask(form.value)
   }
+  router.push({ name: 'Board' })
 }
 </script>
