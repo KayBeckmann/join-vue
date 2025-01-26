@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/index'
+import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
