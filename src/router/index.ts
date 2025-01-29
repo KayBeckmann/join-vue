@@ -5,8 +5,11 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', redirect: '/dashboard' },
-    { path: '/login', name: 'Login', component: () => import('@/views/LoginView.vue') },
-    { path: '/register', name: 'Register', component: () => import('@/views/RegisterView.vue') },
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('../views/AuthView.vue') // Lazy Loading
+    },
     {
       path: '/dashboard',
       name: 'Dashboard',
